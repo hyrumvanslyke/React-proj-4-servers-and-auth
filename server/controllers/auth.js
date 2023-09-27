@@ -1,7 +1,8 @@
-const jwt = require('jwt')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const SECRET = process.env.SECRET
-
+const User = require('../models/post')
+const bcrypt= require('bcryptjs')
 const createToken = (username, id) =>{
 return jwt.sign(
     {
@@ -22,7 +23,16 @@ module.exports = {
         res.sendStatus(200).send(token)
     },
     register: async (req, res) =>{
-        console.log('register')
-        res.sendStatus(200)
+        // try{
+        //     const {username, password} = req.body
+        //     const foundUser = await User.findOne({where: {username: username}})
+
+        // }if(foundUser){
+        //     else{
+
+        // } catch(err){
+        //     console.error(err)
+        //     res.status(400).send(err)
+        // }
     }
 }
