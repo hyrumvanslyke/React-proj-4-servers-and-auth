@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const SECRET = process.env.SECRET;
-const User = require("../models/post");
+const  {User}  = require("../models/user");
 const bcrypt = require("bcryptjs");
 const createToken = (username, id) => {
   return jwt.sign(
@@ -17,39 +17,39 @@ const createToken = (username, id) => {
 };
 
 module.exports = {
-    login: async (req, res) => {
-        try {
-        let { username, password } = req.body;
-        let foundUser = await User.findOne({ where: { username: username } });
-        if (foundUser) {
-            const isAuthenticated = bcrypt.compareSync(
-            password,
-            foundUser.hashedPass
-            );
-            if (isAuthenticated) {
-            let token = createToken(
-                foundUser.dataValues.username,
-                foundUser.dataValues.id
-            );
-            const exp = Date.now() + 1000 * 60 * 60 * 48;
-            const data = {
-                username: foundUser.dataValues.username,
-                userId: foundUser.dataValues.id,
-                token: token,
-                exp: exp,
-            };
-            res.status(200).send(data);
-            } else {
-            res.status(400).send("Password does not match the user");
-            }
+  login: async (req, res) => {
+    try {
+      let { username, password } = req.body;
+      let foundUser = await User.findOne({ where: { username: username } });
+      if (foundUser) {
+        const isAuthenticated = bcrypt.compareSync(
+          password,
+          foundUser.hashedPass
+        );
+        if (isAuthenticated) {
+          let token = createToken(
+            foundUser.dataValues.username,
+            foundUser.dataValues.id
+          );
+          const exp = Date.now() + 1000 * 60 * 60 * 48;
+          const data = {
+            username: foundUser.dataValues.username,
+            userId: foundUser.dataValues.id,
+            token: token,
+            exp: exp,
+          };
+          res.status(200).send(data);
         } else {
-            res.status(400).send("That User does not exist");
+          res.status(400).send("Password does not match the user");
         }
-        } catch (error) {
-        console.error(error);
-        res.status(400).send(error);
-        }
-    },
+      } else {
+        res.status(400).send("That User does not exist");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(400).send(error);
+    }
+  },
   register: async (req, res) => {
     try {
       const { username, password } = req.body;
@@ -84,4 +84,5 @@ module.exports = {
       res.status(400).send(err);
     }
   },
-};
+  }
+
